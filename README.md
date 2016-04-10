@@ -1,4 +1,4 @@
-# pokedex
+# Pokedex
 Тестовое задание для Kottans.
 Посмотреть демо можно [здесь](http://pokedex.flor-master.com).
 
