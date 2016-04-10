@@ -1,5 +1,0 @@
-class PokeApi {
-    getData (url) {
-        
-    }
-}

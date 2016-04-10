@@ -12,12 +12,13 @@ class PokePage {
         document.getElementById('more-poke').addEventListener('click', (event) => {
             document.getElementById('more-poke').disabled = true;
             this.params.page++;
-            new PokeList({page: this.params.page}).render();
+            this.pokeList.render({page: this.params.page});
         });
     }
 
     tmpl() {
         return `
+            <div class='filter' id='filter'></div> 
             <div class='poke-wr'>
                 <div class='poke-list' id='poke-list'>
                     ${ this.pokeList.render() }
