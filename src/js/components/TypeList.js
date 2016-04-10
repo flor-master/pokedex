@@ -6,7 +6,7 @@ class TypeList {
         return `
             <div class='poke-list__item__types type-list'>
                 ${ this.types.map(type => `
-                    <span class='type-list__item'>${type.name}</span>
+                    <span class='type-list__item' data-type='${type.name}'>${type.name}</span>
                 `).join('') }
             </div>
         `;

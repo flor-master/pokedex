@@ -95,13 +95,13 @@
 	            document.getElementById('more-poke').addEventListener('click', function (event) {
 	                document.getElementById('more-poke').disabled = true;
 	                _this.params.page++;
-	                new _PokeList2.default({ page: _this.params.page }).render();
+	                _this.pokeList.render({ page: _this.params.page });
 	            });
 	        }
 	    }, {
 	        key: 'tmpl',
 	        value: function tmpl() {
-	            return '\n            <div class=\'poke-wr\'>\n                <div class=\'poke-list\' id=\'poke-list\'>\n                    ' + this.pokeList.render() + '\n                </div>\n                <div class=\'poke-detail\' id=\'poke-detail\'></div>\n            </div>\n            <button class=\'more\' id=\'more-poke\' disabled>Load More</button>\n        ';
+	            return '\n            <div class=\'filter\' id=\'filter\'></div> \n            <div class=\'poke-wr\'>\n                <div class=\'poke-list\' id=\'poke-list\'>\n                    ' + this.pokeList.render() + '\n                </div>\n                <div class=\'poke-detail\' id=\'poke-detail\'></div>\n            </div>\n            <button class=\'more\' id=\'more-poke\' disabled>Load More</button>\n        ';
 	        }
 	    }]);
 
@@ -157,6 +157,8 @@
 	        _this.params = params;
 	        _this.limit = 12;
 	        _this.url = 'http://pokeapi.co/api/v1/pokemon/?limit=' + _this.limit + '&';
+	        _this.pokeList = [];
+	        _this.pokeTypeForFilter = null;
 	        return _this;
 	    }
 
@@ -169,25 +171,19 @@
 	                document.getElementById('more-poke').insertAdjacentHTML('beforeend', _loader.loader);
 	            }
 	            _get(Object.getPrototypeOf(PokeList.prototype), 'getList', this).call(this, this.url + '&offset=' + this.params.page * this.limit).then(function (val) {
+	                _this2.pokeList = _this2.pokeList.concat(val.objects);
 	                _this2.dataLoad(val);
 	            }, function (val) {
 	                console.log('ERROR!', val);
 	            });
 	        }
 	    }, {
-	        key: 'dataLoad',
-	        value: function dataLoad(val) {
-	            console.log('SUCCESS', val);
-	            if (this.params.page == 0) {
-	                document.getElementById('poke-list').innerHTML = this.tmpl(val.objects);
-	            } else {
-	                document.getElementById('poke-list').insertAdjacentHTML('beforeend', this.tmpl(val.objects));
-	                document.getElementById('more-poke').removeChild(document.getElementById('svg'));
-	            }
-	            document.getElementById('more-poke').disabled = false;
+	        key: 'addEventShowDetail',
+	        value: function addEventShowDetail() {
 	            var p = Array.prototype.slice.call(document.getElementsByClassName("poke-list__item"));
 	            p.map(function (el) {
 	                el.addEventListener('click', function (event) {
+	                    event.preventDefault();
 	                    new _PokeDetail2.default({
 	                        id: event.currentTarget.getAttribute('data-id'),
 	                        count: event.currentTarget.getAttribute('data-key')
@@ -196,18 +192,88 @@
 	            });
 	        }
 	    }, {
+	        key: 'filterPoke',
+	        value: function filterPoke(pokeTypeForFilter) {
+	            var _this3 = this;
+
+	            console.log(pokeTypeForFilter);
+	            this.pokeTypeForFilter = pokeTypeForFilter;
+	            var filteredPokeList = this.pokeList.filter(function (el) {
+	                for (var i = 0; i < el.types.length; i++) {
+	                    if (el.types[i].name == _this3.pokeTypeForFilter) {
+	                        return true;
+	                    }
+	                }
+	                return false;
+	            });
+
+	            return filteredPokeList;
+	        }
+	    }, {
+	        key: 'addEventShowTypes',
+	        value: function addEventShowTypes() {
+	            var _this4 = this;
+
+	            var types = Array.prototype.slice.call(document.querySelectorAll(".type-list__item"));
+
+	            types.map(function (type) {
+	                type.addEventListener('click', function (event) {
+
+	                    event.stopImmediatePropagation();
+	                    var pokeTypeForFilter = event.currentTarget.getAttribute('data-type');
+	                    var filteredPokeList = _this4.filterPoke(pokeTypeForFilter);
+	                    console.log(filteredPokeList);
+
+	                    document.getElementById('poke-list').innerHTML = _this4.tmpl(filteredPokeList);
+	                    var filterEl = document.getElementById('filter');
+	                    filterEl.innerHTML = pokeTypeForFilter;
+	                    filterEl.style.display = 'inline-block';
+	                    _this4.addEventShowDetail();
+	                    filterEl.addEventListener('click', function (el) {
+	                        _this4.pokeTypeForFilter = null;
+	                        document.getElementById('poke-list').innerHTML = _this4.tmpl(_this4.pokeList);
+	                        el.target.style.display = 'none';
+	                        _this4.addEventShowDetail();
+	                        _this4.addEventShowTypes();
+	                    });
+	                });
+	            });
+	        }
+	    }, {
+	        key: 'dataLoad',
+	        value: function dataLoad(val) {
+	            if (this.pokeTypeForFilter != null) {
+	                val.objects = this.filterPoke(this.pokeTypeForFilter);
+	                document.getElementById('poke-list').innerHTML = this.tmpl(val.objects);
+	                document.getElementById('more-poke').removeChild(document.getElementById('svg'));
+	            } else {
+	                if (this.params.page == 0) {
+	                    document.getElementById('poke-list').innerHTML = this.tmpl(val.objects);
+	                } else {
+	                    document.getElementById('poke-list').insertAdjacentHTML('beforeend', this.tmpl(val.objects));
+	                    document.getElementById('more-poke').removeChild(document.getElementById('svg'));
+	                }
+	            }
+	            document.getElementById('more-poke').disabled = false;
+	            this.addEventShowDetail();
+	            this.addEventShowTypes();
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var params = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+	            this.params.page = params ? params.page : 0;
 	            this.getData();
 	            return _loader.loader;
 	        }
 	    }, {
 	        key: 'tmpl',
 	        value: function tmpl(data) {
-	            var _this3 = this;
+	            var _this5 = this;
 
 	            return '\n            ' + data.map(function (el, key) {
-	                return '\n                <div class=\'poke-list__item\' data-key=\'' + (_this3.params.page * _this3.limit + key + 1) + '\' data-id=\'' + el.pkdx_id + '\'>\n                    <div class=\'poke-list__item__img\'>\n                        <img src=\'http://pokeapi.co/media/img/' + el.pkdx_id + '.png\' />\n                    </div>\n                    <h3 class=\'poke-list__item__title\'>' + el.name + '</h3>\n                    ' + new _TypeList2.default(el.types).render() + '\n                </div>\n            ';
+	                return '\n                <div class=\'poke-list__item\' data-key=\'' + (_this5.params.page * _this5.limit + key + 1) + '\' data-id=\'' + el.pkdx_id + '\'>\n                    <div class=\'poke-list__item__img\'>\n                        <img src=\'http://pokeapi.co/media/img/' + el.pkdx_id + '.png\' />\n                    </div>\n                    <h3 class=\'poke-list__item__title\'>' + el.name + '</h3>\n                    ' + new _TypeList2.default(el.types).render() + '\n                </div>\n            ';
 	            }).join('') + '\n        ';
 	        }
 	    }]);
@@ -710,7 +776,7 @@
 	        key: 'render',
 	        value: function render() {
 	            return '\n            <div class=\'poke-list__item__types type-list\'>\n                ' + this.types.map(function (type) {
-	                return '\n                    <span class=\'type-list__item\'>' + type.name + '</span>\n                ';
+	                return '\n                    <span class=\'type-list__item\' data-type=\'' + type.name + '\'>' + type.name + '</span>\n                ';
 	            }).join('') + '\n            </div>\n        ';
 	        }
 	    }]);
