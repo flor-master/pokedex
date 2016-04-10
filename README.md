@@ -1,6 +1,6 @@
 # Pokedex
 Тестовое задание для Kottans.
-Посмотреть демо можно [здесь](http://pokedex.flor-master.com).
+Посмотреть демо можно [здесь](http://pokedex.flor-master.com) или на [gitHub Pages](http://flor-master.github.io/pokedex/dist/)
 
 Для запуска и редактировани проекта необходимо.
 ```javascript
@@ -12,4 +12,3 @@ open http://localhost:9090
 ```
 
 После выполнения комманд у вас будут установлены необходимые пакеты для разработки, запущен веб сервер, настроены вотчеры для scss и js.
-
