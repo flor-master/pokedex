@@ -64,14 +64,14 @@ class PokeDetail extends PokeApi {
 
                 <div class="poke-detail__item -fix">
                     <span class='close' id='close'>X</span>
-                    <div class="poke-detail__item__img">
+                    <div class="poke-detail__item__img"> 
                         <img src="http://pokeapi.co/media/img/${poke.pkdx_id}.png" />
                     </div>
                     <h2 class="poke-detail__item__title">${poke.name} ${this.format_count(this.params.count)}</h2>
                     <div class="poke-detail__item__abilities abilities">
                         <div class="abilities__type">Type:</div> <div class="abilities__value">${this.type_list_tmpl(poke.types)}</div>
                         <div class="abilities__type">Attack:</div> <div class="abilities__value">${poke.attack}</div>
-                        <div class="abilities__type">Defence:</div> <div class="abilities__value">${poke.defence}</div>
+                        <div class="abilities__type">Defense:</div> <div class="abilities__value">${poke.defense}</div>
                         <div class="abilities__type">HP:</div> <div class="abilities__value">${poke.hp}</div>
                         <div class="abilities__type">SP Attack:</div> <div class="abilities__value">${poke.sp_atk}</div>
                         <div class="abilities__type">SP Defence:</div> <div class="abilities__value">${poke.sp_def}</div>
