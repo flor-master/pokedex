@@ -58,6 +58,7 @@ class PokeDetail extends PokeApi {
         `;
     }
     tmpl (poke) {
+        console.log(poke);
         return `
             <div class="poke-detail__item">
                 <div class='bg-cover-fix'></div>
@@ -71,7 +72,7 @@ class PokeDetail extends PokeApi {
                     <div class="poke-detail__item__abilities abilities">
                         <div class="abilities__type">Type:</div> <div class="abilities__value">${this.type_list_tmpl(poke.types)}</div>
                         <div class="abilities__type">Attack:</div> <div class="abilities__value">${poke.attack}</div>
-                        <div class="abilities__type">Defence:</div> <div class="abilities__value">${poke.defence}</div>
+                        <div class="abilities__type">defense:</div> <div class="abilities__value">${poke.defense}</div>
                         <div class="abilities__type">HP:</div> <div class="abilities__value">${poke.hp}</div>
                         <div class="abilities__type">SP Attack:</div> <div class="abilities__value">${poke.sp_atk}</div>
                         <div class="abilities__type">SP Defence:</div> <div class="abilities__value">${poke.sp_def}</div>
